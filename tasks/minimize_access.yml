@@ -3,7 +3,7 @@
 - name: find directories for minimizing access
   stat:
     path: '{{ item }}'
-  register: minimize_access_directories
+  register: minimize_default_access_directories
   with_items:
     - '/usr/local/sbin'
     - '/usr/local/bin'
@@ -12,6 +12,16 @@
     - '/sbin'
     - '/bin'
     - '{{ os_env_extra_user_paths }}'
+
+- name: find directories for minimizing access
+  stat:
+    path: '{{ item }}'
+  register: minimize_user_access_directories
+  loop: '{{ os_env_extra_user_paths }}'
+
+- name: combine the two dicts
+  set_fact:
+    minimize_access_directories: "{{ minimize_default_access_directories | combine(minimize_user_access_directories) | default([]) }}"
 
 - name: minimize access
   file:

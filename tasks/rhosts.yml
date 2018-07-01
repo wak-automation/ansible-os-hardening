@@ -9,7 +9,7 @@
   file:
     dest: '~{{ item }}/.rhosts'
     state: 'absent'
-  with_flattened: '{{ users.stdout_lines | default([]) }}'
+  loop: '{{ users.stdout_lines | flatten | default([]) }}'
 
 - name: delete hosts.equiv from system | os-01
   file:
@@ -20,4 +20,4 @@
   file:
     dest: '~{{ item }}/.netrc'
     state: 'absent'
-  with_flattened: '{{ users.stdout_lines | default([]) }}'
+  loop: '{{ users.stdout_lines | flatten | default([]) }}'
